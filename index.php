@@ -1,3 +1,36 @@
+<?php
+// Funzione per generare una password casuale
+function generaPasswordCasuale($lunghezza) {
+    $caratteriMinuscoli = 'abcdefghijklmnopqrstuvwxyz';
+    $caratteriMaiuscoli = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $numeri = '0123456789';
+    $simboli = '!@#$%^&*()_+[]{}|;:,.<>?';
+
+    $tuttiCaratteri = $caratteriMinuscoli . $caratteriMaiuscoli . $numeri . $simboli;
+
+    // Mescola i caratteri per ottenere una password più casuale
+    $tuttiCaratteri = str_shuffle($tuttiCaratteri);
+
+    // Estrai la lunghezza desiderata della password
+    $passwordGenerata = substr($tuttiCaratteri, 0, $lunghezza);
+
+    return $passwordGenerata;
+}
+
+// Verifica se il form è stato inviato
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["mail"])) {
+    // Ottieni l'email dall'input del form
+    $mail = $_GET["mail"];
+
+    // Ottieni la lunghezza della password dall'input del form
+    $lunghezzaPassword = $_GET["lunghezza_password"];
+
+    // Genera la password casuale
+    $passwordCasuale = generaPasswordCasuale($lunghezzaPassword);
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,15 +41,15 @@
 </head>
 <body>
     <div class="container mt-5">
-        <form>
+    <form method="get">
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input name="mail" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
+                <label for="exampleInputPassword1" class="form-label">Password Length</label>
+                <input type="number" name="lunghezza_password" class="form-control" id="exampleInputPassword1" required min="1">
             </div>
             <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -25,6 +58,12 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
+        <?php
+        // Mostra la password generata se è disponibile
+        if (isset($passwordCasuale)) {
+            echo "<p class='mt-3'>La tua password casuale è: <strong>$passwordCasuale</strong></p>";
+        }
+        ?>
     </div>
 
 
